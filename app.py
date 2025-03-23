@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify, render_template
 from pymongo import MongoClient
 
@@ -31,4 +32,5 @@ def search_buses():
     return jsonify(result)  # Returns only busName and time
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Render assigns a dynamic port
+    app.run(host="0.0.0.0", port=port, debug=True)
