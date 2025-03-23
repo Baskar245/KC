@@ -1,1 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+        }
+        table {
+            margin: auto;
+            width: 50%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2>Search Available Buses</h2>
+    
+    <label for="start">Start:</label>
+    <input type="text" id="start" placeholder="Enter start location">
+    
+    <label for="end">End:</label>
+    <input type="text" id="end" placeholder="Enter end location">
+    
+    <button onclick="searchBuses()">Search</button>
+
+    <h3>Available Buses</h3>
+    <table id="resultTable">
+        <thead>
+            <tr>
+                <th>Bus Name</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody id="resultBody"></tbody>
+    </table>
+
+    <script>
+        function searchBuses() {
+            const start = document.getElementById("start").value;
+            const end = document.getElementById("end").value;
+
+            if (!start || !end) {
+                alert("Please enter both start and end locations.");
+                return;
+            }
+
+            fetch(`/search?start=${start}&end=${end}`)
+                .then(response => response.json())
+                .then(data => {
+                    const resultBody = document.getElementById("resultBody");
+                    resultBody.innerHTML = ""; // Clear old results
+                    
+                    if (data.message) {
+                        resultBody.innerHTML = `<tr><td colspan="2">${data.message}</td></tr>`;
+                    } else {
+                        data.forEach(bus => {
+                            resultBody.innerHTML += `<tr><td>${bus.busName}</td><td>${bus.time}</td></tr>`;
+                        });
+                    }
+                })
+                .catch(error => console.error("Error fetching data:", error));
+        }
+    </script>
+</body>
+</html>
 
